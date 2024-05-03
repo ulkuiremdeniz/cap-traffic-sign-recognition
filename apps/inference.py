@@ -17,6 +17,7 @@ from capsules.capsule.src.models.PackageModel import PackageModel,PackageConfigs
 ENDPOINT_URL = "http://127.0.0.1:8000/api"
 
 
+
 def inference():
     config = Config.from_json(CFG)
     image_data =Image(name="image", uID="323332", mimeType="image/jpg", encoding="base64",value =image.encode64(np.asarray(cv2.imread(config.project.path +'/capsules/capsule/resources/yorkshire_terrier.jpg')).astype(np.float32),'image/jpg'), type="Image")

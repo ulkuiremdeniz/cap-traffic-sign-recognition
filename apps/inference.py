@@ -11,28 +11,34 @@ from sdks.novavision.src.base.model import Image, Request
 from capsules.capsule.src.utils.config import Config
 from capsules.capsule.src.configs.config import CFG
 
-from capsules.capsule.src.models.PackageModel import PackageModel,PackageConfigs,SegmentationConfigs,SegmentationInputs,SegmentationExecutor,SegmentationRequest,ConfigType,InputImage,configTypeSegmentation,ConfigExecutor
-
+from capsules.TrafficSignRecognition.src.models.PackageModel import PackageModel, PackageConfigs, ConfigExecutor, \
+    TrafficSignRecognitionExecutor, TrafficSignRecognitionRequest, TrafficSignRecognitionInputs, InputImage, \
+    TrafficSignRecognitionConfigs, DrawBBox, DrawBBoxEnable, DrawBBoxDisable
 
 ENDPOINT_URL = "http://127.0.0.1:8000/api"
 
 
-
 def inference():
     config = Config.from_json(CFG)
-    image_data =Image(name="image", uID="323332", mimeType="image/jpg", encoding="base64",value =image.encode64(np.asarray(cv2.imread(config.project.path +'/capsules/capsule/resources/yorkshire_terrier.jpg')).astype(np.float32),'image/jpg'), type="Image")
-    segmentation = configTypeSegmentation()
-    configTypevalue = ConfigType(value=segmentation)
-    segmentationConfigs = SegmentationConfigs(configType=configTypevalue)
+    # giriş görüntüsü base64 formatına dönüştürülüyor
+    image_data = Image(name="image", uID="323332", mimeType="image/png", encoding="base64", value=image.encode64(
+        np.asarray(cv2.imread(config.project.path + '/capsules/TrafficSignRecognition/resources/deneme.png')).astype(np.float32),
+        'image/png'), type="Image")
+
+    # drawBBoxDisable = DrawBBoxDisable(value="False")
+    drawBBoxEnable = DrawBBoxEnable(value=True)
+    drawBBox = DrawBBox(value= drawBBoxEnable)
+    trafficSignRecognitionConfigs = TrafficSignRecognitionConfigs(drawBBox=drawBBox)
     inputImage = InputImage(value=image_data)
-    segmentationInputs = SegmentationInputs(inputImage=inputImage)
-    segmentationRequest = SegmentationRequest(inputs=segmentationInputs, configs=segmentationConfigs)
-    segmentationExecutor = SegmentationExecutor(value=segmentationRequest)
-    executor = ConfigExecutor(value=segmentationExecutor)
-    packageConfigs = PackageConfigs(executor=executor)
-    request = PackageModel(configs=packageConfigs, name="Segmentation")
+    trafficSignRecognitionInputs = TrafficSignRecognitionInputs(inputImage=inputImage)
+    trafficSignRecognitionRequest = TrafficSignRecognitionRequest(inputs=trafficSignRecognitionInputs,
+                                                                  configs=trafficSignRecognitionConfigs)
+    trafficSignRecognitionExecutor = TrafficSignRecognitionExecutor(value=trafficSignRecognitionRequest)
+    configExecutor = ConfigExecutor(value=trafficSignRecognitionExecutor)
+    packageConfigs = PackageConfigs(executor=configExecutor)
+    request = PackageModel(configs=packageConfigs, name="TrafficSignRecognition")
     request_json = json.loads(request.json())
-    response = requests.post(ENDPOINT_URL, json =request_json)
+    response = requests.post(ENDPOINT_URL, json=request_json)
     print(response.raise_for_status())
     print(response.json())
 

@@ -72,7 +72,6 @@ class TrafficSignRecognition(Capsule):
         return pred_label, pred_probabilities[pred_class]
 
 
-
     def run(self):
         # pred_list = []
         #     for img in self.images:

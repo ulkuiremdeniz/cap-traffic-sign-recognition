@@ -1,6 +1,7 @@
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(__file__),'../../../'))
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '../../../'))
 import requests
 import cv2
 import numpy as np
@@ -20,14 +21,13 @@ ENDPOINT_URL = "http://127.0.0.1:8000/api"
 
 def inference():
     config = Config.from_json(CFG)
-    # giriş görüntüsü base64 formatına dönüştürülüyor
     image_data = Image(name="image", uID="323332", mimeType="image/png", encoding="base64", value=image.encode64(
-        np.asarray(cv2.imread(config.project.path + '/capsules/TrafficSignRecognition/resources/deneme.png')).astype(np.float32),
+        np.asarray(cv2.imread(config.project.path + '/capsules/TrafficSignRecognition/resources/deneme.png')).astype(
+            np.float32),
         'image/png'), type="Image")
 
-    # drawBBoxDisable = DrawBBoxDisable(value="False")
     drawBBoxEnable = DrawBBoxEnable(value=True)
-    drawBBox = DrawBBox(value= drawBBoxEnable)
+    drawBBox = DrawBBox(value=drawBBoxEnable)
     trafficSignRecognitionConfigs = TrafficSignRecognitionConfigs(drawBBox=drawBBox)
     inputImage = InputImage(value=image_data)
     trafficSignRecognitionInputs = TrafficSignRecognitionInputs(inputImage=inputImage)
@@ -43,6 +43,5 @@ def inference():
     print(response.json())
 
 
-
-if __name__ =="__main__":
+if __name__ == "__main__":
     inference()

@@ -1,4 +1,3 @@
-import numbers
 
 from pydantic import Field, validator
 from typing import List, Optional, Union, Any, Dict,Literal
@@ -89,9 +88,8 @@ class TrafficSignRecognitionConfigs(Configs):
 
 
 
-#paketin outputlarının birleştiği yer
+
 class TrafficSignRecognitionOutputs(Outputs):
-   #outputları class olarak tanımlaman gerekli
    outputImage:OutputImage
    outputDetection:OutputDetection
 
@@ -100,7 +98,6 @@ class TrafficSignRecognitionOutputs(Outputs):
 
 class TrafficSignRecognitionRequest(Request):
     inputs :Optional[TrafficSignRecognitionInputs]
-    #config yanda verilen seçenek yeri kullanıcının girdiği parametre
     configs: TrafficSignRecognitionConfigs
 
     class Config:
@@ -113,18 +110,13 @@ class TrafficSignRecognitionResponse(Response):
     outputs: TrafficSignRecognitionOutputs
 
 
-# configexecutor de tanımladığın her executerın bir classı vardır
 class TrafficSignRecognitionExecutor(Config):
     name: Literal["TrafficSignRecognition"] = "TrafficSignRecognition"
-
-    #executerın request ve responselarını value değerine veriyoruz
-    #value neyse type odur
     value: Union[TrafficSignRecognitionRequest, TrafficSignRecognitionResponse]
     type: Literal["object"] = "object"
     field: Literal["option"] = "option"
 
     class Config:
-        #kullanıcı tarafında executerın webde  görünen isimi
         title = "Traffic Sign Recognition"
         schema_extra = {
             "target": {
@@ -135,41 +127,26 @@ class TrafficSignRecognitionExecutor(Config):
 
 
 class ConfigExecutor(Config):
-    #executer klasöründe bu classa ulaşmamızı sağlayan isim
     name: Literal["ConfigExecutor"] = "ConfigExecutor"
-
-    #birden fazla executor varsa bu şekilde belirtiyoruz
-    #value: Union[Executor1,Executor2]
-    #union:value değeri birden fazla değer alabilir
     value: Union[TrafficSignRecognitionExecutor]
-
-    #value değerinin tipi
-    #literal type değişmez başka bir şey veremezsin(final gibi)
     type:Literal["executor"] = "executor"
-
-    #bu classın web tarafındaki kullanıcıya sunulan input taraflarının backend kısmı gibi...
     field: Literal["dependentDropdownlist"] = "dependentDropdownlist"
 
     class Config:
         title = "Task"
 
-        #eğer birden fazla varsa kullanma
-        #eğer 1 tane executor varsa target değeri value olarak verilecek
         schema_extra = {
            "target":"value"
         }
 
 
-#executorlar packagemodel'e buradan bağlantı yapıyor
+
 class PackageConfigs(Configs):
     executor: ConfigExecutor
 
 
-#1.paketin özelliklerini belirtiyoruz
 class PackageModel(Package):
     configs: PackageConfigs
-    #paketin tipine göre belirliyoruz(capsules,components,widgets)
     type: Literal["TrafficSignRecognition"] = "TrafficSignRecognition"
-    #paketin adı
     name: Literal["TrafficSignRecognition"] = "TrafficSignRecognition"
     uID = "1221112"

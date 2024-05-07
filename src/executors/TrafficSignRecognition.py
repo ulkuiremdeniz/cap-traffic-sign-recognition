@@ -37,9 +37,10 @@ class TrafficSignRecognition(Capsule):
         return model
 
     def infer(self, image):
+        config = Config.from_json(CFG)
         image = np.expand_dims(image, axis=0)
         image = np.array(image)
-        with open('capsules/TrafficSignRecognition/src/classes/classes.json', 'r') as f:
+        with open(config.project.path+'/capsules/TrafficSignRecognition/src/classes/classes.json', 'r') as f:
             classes = json.load(f)
         json.dumps(classes)
         pred_probabilities = self.model.predict(image)[0]
